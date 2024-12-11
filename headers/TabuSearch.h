@@ -8,6 +8,8 @@
 #include "Algorithm.h"
 #include <iostream>
 #include <vector>
+#include <set>
+#include <list>
 
 using namespace std;
 
@@ -15,15 +17,40 @@ class TabuSearch : public Algorithm {
 
 private:
 
-    int time = 0;
+    // Kryterium stopu
+    int timeLimit;
+    int iterationsWithoutImprovementLimit;
+
+    // Definicja sasiedztwa; 1 - insert, 2 - swap, 3 - invert
+    int neighborhoodDef;
+
+    // Licznik iteracji bez poprawy rozwiazania
+    int noImprovementIterations;
+
+    // Lista tabu
+    //std::set<std::pair<int, int>> tabuList;
+    std::list<std::pair<std::vector<int>, int>> tabuList;
+
+    // Kadencja dla rozwiazan na liscie tabu
+    int tabuCadency;
 
     vector<int> randomPermutation(int size);
-    int calculatePath(vector <int> path);
+    void updateTabuList(const std::vector<int>& solution);
+    void diversify(std::vector<int> currentSolution);
+    bool isTabu(const std::vector<int>& solution);
+
+    // Generowanie rozwiazan w sasiedztwa rozwiazania currentSolution, w zaleznosci od definicji
+    std::vector<std::vector<int>> neighborhoodInsert(const std::vector<int>& solution);
+    std::vector<std::vector<int>> neighborhoodSwap(const std::vector<int>& solution);
+    std::vector<std::vector<int>> neighborhoodInvert(const std::vector<int>& solution);
+
 
 public:
 
     TabuSearch();
-    void setTime(int t);
+    void setTimeLimit(int t);
+    void setNeighborhoodDef(int nDef);
     void algorithm();
+    int calculatePathCost(vector <int> path);
 
 };
