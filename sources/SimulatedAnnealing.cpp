@@ -34,6 +34,7 @@ void SimulatedAnnealing::algorithm() {
 
     // Wyczyszczenie rozwiazania
     resultVector.clear();
+    double timeOfResult = 0.0;
 
     // Rozwiazanie poczatkowe - wygenerowane losowo
     std::vector<int> currentSolution;
@@ -111,6 +112,7 @@ void SimulatedAnnealing::algorithm() {
             if (currentCost < bestCost) {
                 bestSolution = currentSolution;
                 bestCost = currentCost;
+                timeOfResult = std::chrono::duration<double>(std::chrono::steady_clock::now() - startTime).count();
             }
         }
 
@@ -121,6 +123,7 @@ void SimulatedAnnealing::algorithm() {
 
     cout << endl << "Wartosc koncowa parametru kontrolnego Tk: " << temperature << endl;
     cout << "Wartosc wyrazenia exp(-1/Tk): " << std::exp(-1 / temperature) << endl;
+    cout << "Czas znalezienia najlepszego rozwiazania: " << timeOfResult << " sekund" << endl;
 
     resultVector = bestSolution;
 }

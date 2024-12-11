@@ -325,44 +325,55 @@ void showMenu()
 
             case 9: // wczytanie sciezki z pliku .txt
             {
-                cout << endl << "Podaj nazwe pliku do odczytania sciezki rozwiazania: ";
-                cin >> filename;
+                if(costMatrix != nullptr) {
 
-                std::ifstream inFile(filename);
-                if (!inFile) {
-                    cerr << "Error: Nie mozna otworzyc pliku " << filename << endl;
-                    return;
+                    cout << endl << "Podaj nazwe pliku do odczytania sciezki rozwiazania: ";
+                    cin >> filename;
+
+                    std::ifstream inFile(filename);
+                    if (!inFile) {
+                        cerr << "Error: Nie mozna otworzyc pliku " << filename << endl;
+                        return;
+                    }
+
+                    int numVertices;
+                    // Odczytanie liczby wierzcholkow
+                    if (!(inFile >> numVertices)) {
+                        std::cerr << "Error: Invalid file format (missing number of vertices)." << std::endl;
+                        return;
+                    }
+
+                    // Odczytanie sciezki
+                    int *path = new int[n + 1];
+                    int vertex, index = 0;
+                    while (inFile >> vertex) {
+                        path[index++] = vertex;
+                    }
+
+                    inFile.close();
+
+
+                    // Obliczenie kosztu sciezki na podstawie macierzy kosztow
+                    int pathCost = 0;
+                    for (int i = 0; i < numVertices; i++) {
+                        pathCost += costMatrix[path[i]][path[i + 1]];
+                    }
+                    pathCost += costMatrix[path[n]][path[0]];
+
+                    cout << endl << "Odczytana sciezka:" << endl;
+                    for (int i = 0; i < numVertices + 1; i++) {
+                        cout << path[i] << " ";
+                    }
+                    cout << endl << "Calkowity koszt scieki: " << pathCost << endl;
+
+                    // Zwolnienie pamieci
+                    delete [] path;
+
+                } else {
+
+                    cout << endl << "Wczytaj macierz kosztow, aby moc wyznaczyc koszt sciezki zapisanej w pliku." << endl;
+
                 }
-
-                int numVertices;
-                // Read the number of vertices
-                if (!(inFile >> numVertices)) {
-                    std::cerr << "Error: Invalid file format (missing number of vertices)." << std::endl;
-                    return;
-                }
-
-                // Read the path
-                int *path = new int[n + 1];
-                int vertex, index = 0;
-                while (inFile >> vertex) {
-                    path[index++] = vertex;
-                }
-
-                inFile.close();
-
-
-                // Oblicz koszt drogi na podstawie macierzy kosztow
-                int pathsCost = 0;
-                for (int i = 0; i < numVertices; i++) {
-                    pathsCost += costMatrix[path[i]][path[i + 1]];
-                }
-                pathsCost += costMatrix[path[n]][path[0]];
-
-                cout << endl << "Odczytana sciezka:" << endl;
-                for (int i = 0; i < numVertices + 1; i++) {
-                    cout << path[i] << " ";
-                }
-                cout << endl << "Calkowity koszt scieki: " << pathsCost << endl;
 
                 break;
             }
