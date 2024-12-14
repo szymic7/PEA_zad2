@@ -5,12 +5,13 @@
 #include <chrono>
 #include <iostream>
 #include "../headers/SimulatedAnnealing.h"
+#include "../headers/Greedy.h"
 
 using namespace std;
 
 //--------------------------------------------------------------------------------------------------
 
-SimulatedAnnealing::SimulatedAnnealing() : Algorithm() {
+SimulatedAnnealing::SimulatedAnnealing() : Algorithm(), gen(std::random_device{}()) {
     timeLimit = 0;
     alfa = 0.99;
     //Lk = 100;
@@ -40,9 +41,20 @@ void SimulatedAnnealing::algorithm() {
     std::vector<int> currentSolution;
     currentSolution.resize(n);
     std::iota(currentSolution.begin(), currentSolution.end(), 0);
-    std::random_device rd;
-    std::mt19937 gen(rd());
     std::shuffle(currentSolution.begin(), currentSolution.end(), gen);
+
+    // Greedy
+    /*Greedy greedy;
+    greedy.setN(n);
+    greedy.setCostMatrix(costMatrix);
+    greedy.greedyAlgorithm();
+
+    int* resultVertices = greedy.getResultVertices();
+    currentSolution.resize(n); // Ustaw rozmiar wektora
+    for (int i = 0; i < n; ++i) {
+        currentSolution[i] = resultVertices[i];
+    }
+    delete [] resultVertices;*/
 
     std::vector<int> bestSolution = currentSolution;
     int bestCost = calculatePathCost(bestSolution);
@@ -110,9 +122,16 @@ void SimulatedAnnealing::algorithm() {
 
             // Aktualizacja najlepszego rozwiazania
             if (currentCost < bestCost) {
-                bestSolution = currentSolution;
+                /*bestSolution = currentSolution;
                 bestCost = currentCost;
                 timeOfResult = std::chrono::duration<double>(std::chrono::steady_clock::now() - startTime).count();
+                cout << bestCost << " " << timeOfResult << endl;*/
+
+                timeOfResult = std::chrono::duration<double>(std::chrono::steady_clock::now() - startTime).count();
+                bestSolution = currentSolution;
+                cout << bestCost << " " << timeOfResult << endl;
+                bestCost = currentCost;
+                cout << bestCost << " " << timeOfResult << endl;
             }
         }
 

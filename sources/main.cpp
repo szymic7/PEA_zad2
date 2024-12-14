@@ -84,7 +84,6 @@ void showMenu()
                     }
                     delete[] costMatrix;
                 }
-                costMatrix = nullptr;
 
                 std::string line;
                 n = 0;
@@ -100,17 +99,17 @@ void showMenu()
                 }
 
                 if (n == 0) {
-                    std::cerr << "Error: Matrix size not found in file" << std::endl;
+                    std::cerr << "Error: Rozmiar macierzy nie zostal znaleziony." << std::endl;
                     return;
                 }
 
-                // Allocate dynamic 2D array
+                // Utworzenie nowej dynamicznej tablicy 2d
                 costMatrix = new int*[n];
                 for (int i = 0; i < n; ++i) {
                     costMatrix[i] = new int[n];
                 }
 
-                // Read the matrix values
+                // Zczytywanie wartosci macierzy
                 int row = 0, col = 0;
                 while (std::getline(file, line) && row < n) {
                     std::istringstream stream(line);
@@ -207,16 +206,38 @@ void showMenu()
                     tabuSearch.setN(n);
                     tabuSearch.setCostMatrix(costMatrix);
 
+                    switch (n) {
+                        case 56:
+                            tabuSearch.setTabuCadency(10);
+                            tabuSearch.setIterationsLimit(50);
+                            cout << endl << "Ustawiono parametry dla ftv55." << endl;
+                            break;
+                        case 171:
+                            tabuSearch.setTabuCadency(15);
+                            tabuSearch.setIterationsLimit(75);
+                            cout << endl << "Ustawiono parametry dla ftv170." << endl;
+
+                            break;
+                        case 358:
+                            tabuSearch.setTabuCadency(20);
+                            tabuSearch.setIterationsLimit(150);
+                            cout << endl << "Ustawiono parametry dla rbg358." << endl;
+                            break;
+                        default:
+                            tabuSearch.setTabuCadency(10);
+                            tabuSearch.setIterationsLimit(50);
+                            cout << endl << "Ustawiono domyslne parametry algorytmu TS." << endl;
+                            break;
+                    }
+
                     tabuSearch.algorithm();
                     result = tabuSearch.getResultVector();
                     cout << "Koszt znalezionego rozwiazania: " << tabuSearch.calculatePathCost(result) << endl;
                     cout << "Znalezione rozwiazanie: ";
                     for(const int& vertice : result)
-                        cout << vertice << " ";
+                        cout << vertice << ", ";
+                    cout << result[0];
 
-                    //cout << "Wynik: " << tabuSearch.getResult() << endl;
-                    //cout << "Najlepsza sciezka: ";
-                    //tabuSearch.printResultVertices();
                     cout << endl;
 
                 } else {
@@ -277,7 +298,8 @@ void showMenu()
                     cout << "Koszt znalezionego rozwiazania: " << simulatedAnnealing.calculatePathCost(result) << endl;
                     cout << "Znalezione rozwiazanie: ";
                     for(const int& vertice : result)
-                        cout << vertice << " ";
+                        cout << vertice << ", ";
+                    cout << result[0];
 
                     //cout << "Wynik: " << tabuSearch.getResult() << endl;
                     //cout << "Najlepsza sciezka: ";
@@ -303,15 +325,15 @@ void showMenu()
                         return;
                     }
 
-                    // Write the number of vertices (n) in the first line
+                    // Wypisanie liczby wierzcholkow w pierwszej linijce pliku
                     outFile << result.size() << std::endl;
 
-                    // Zapisz wierzchołki w kolejnych liniach
+                    // Kolejne wierzcholki w kolejnych liniach
                     for (const int& vertex : result) {
                         outFile << vertex << "\n";
                     }
 
-                    // Dodaj pierwszy wierzchołek na końcu, aby zamknąć cykl
+                    // Dodanie wierzcholka startowego na koncu trasy
                     outFile << result.front() << "\n";
 
                     outFile.close();
@@ -336,10 +358,10 @@ void showMenu()
                         return;
                     }
 
-                    int numVertices;
                     // Odczytanie liczby wierzcholkow
+                    int numVertices;
                     if (!(inFile >> numVertices)) {
-                        std::cerr << "Error: Invalid file format (missing number of vertices)." << std::endl;
+                        std::cerr << "Error: Nie mozna odczytac dlugosci sciezki." << std::endl;
                         return;
                     }
 

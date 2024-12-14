@@ -12,6 +12,8 @@ class SimulatedAnnealing : public Algorithm {
     float alfa; // Wspolczynnik zmiany temperatury
     int Lk; // Limit iteracji dla danej wartosci temperatury
 
+    std::mt19937 gen;
+
     std::vector<int> getRandomNeighbor(const std::vector<int>& solution, std::mt19937& gen);
 
 public:

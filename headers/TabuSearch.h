@@ -10,6 +10,7 @@
 #include <vector>
 #include <set>
 #include <list>
+#include <random>
 
 using namespace std;
 
@@ -28,22 +29,16 @@ private:
     int noImprovementIterations;
 
     // Lista tabu
-    //std::set<std::pair<int, int>> tabuList;
-    //std::list<std::pair<std::vector<int>, int>> tabuList;
     int** tabuList;
 
     // Kadencja dla rozwiazan na liscie tabu
     int tabuCadency;
 
-    vector<int> randomPermutation(int size);
-    void updateTabuList(/*const std::vector<int>& solution*/ int bestI, int bestJ);
-    void diversify(std::vector<int>& currentSolution);
-    bool isTabu(const std::vector<int>& solution);
+    std::mt19937 gen;
 
-    // Generowanie rozwiazan w sasiedztwa rozwiazania currentSolution, w zaleznosci od definicji
-    std::vector<std::vector<int>> neighborhoodInsert(const std::vector<int>& solution);
-    std::vector<std::vector<int>> neighborhoodSwap(const std::vector<int>& solution);
-    std::vector<std::vector<int>> neighborhoodInvert(const std::vector<int>& solution);
+    void updateTabuList(int bestI, int bestJ);
+    void diversify(std::vector<int>& currentSolution);
+
 
     std::vector<int> findBestNeighborInsert(const std::vector<int>& solution, int& bestCost, int& bestI, int& bestJ);
     std::vector<int> findBestNeighborSwap(const std::vector<int>& solution, int& bestCost, int& bestI, int& bestJ);
@@ -53,8 +48,11 @@ private:
 public:
 
     TabuSearch();
+    void setN(int size);
     void setTimeLimit(int t);
     void setNeighborhoodDef(int nDef);
+    void setTabuCadency(int cadency);
+    void setIterationsLimit(int iterationsLimit);
     void algorithm();
     int calculatePathCost(vector <int> path);
 
