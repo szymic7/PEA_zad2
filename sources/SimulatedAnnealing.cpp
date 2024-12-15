@@ -43,19 +43,6 @@ void SimulatedAnnealing::algorithm() {
     std::iota(currentSolution.begin(), currentSolution.end(), 0);
     std::shuffle(currentSolution.begin(), currentSolution.end(), gen);
 
-    // Greedy
-    /*Greedy greedy;
-    greedy.setN(n);
-    greedy.setCostMatrix(costMatrix);
-    greedy.greedyAlgorithm();
-
-    int* resultVertices = greedy.getResultVertices();
-    currentSolution.resize(n); // Ustaw rozmiar wektora
-    for (int i = 0; i < n; ++i) {
-        currentSolution[i] = resultVertices[i];
-    }
-    delete [] resultVertices;*/
-
     std::vector<int> bestSolution = currentSolution;
     int bestCost = calculatePathCost(bestSolution);
     int currentCost = bestCost;
@@ -77,32 +64,6 @@ void SimulatedAnnealing::algorithm() {
 
     while (std::chrono::duration<double>(std::chrono::steady_clock::now() - startTime).count() < timeLimit && temperature > 1e-8) {
 
-        // BEZ PETLI WEWNETRZNEJ
-        /*std::vector<int> neighbor;
-
-        // neighbor - znalezienie rozwiazania w sasiedztwie currentSolution
-        neighbor = getRandomNeighbor(currentSolution, gen);
-        int neighborCost = calculatePathCost(neighbor);
-
-        // Wyznaczenie prawdopodobienstwa zaakceptowania rozwiazania
-        double delta = neighborCost - currentCost;
-        double acceptanceProbability = delta < 0 ? 1.0 : std::exp(-delta / temperature);
-
-        // Akceptacja nowego rozwiazania, jesli neighborCost < currentCost lub na podstawie prawdopodobienstwa
-        if (std::generate_canonical<double, 10>(gen) < acceptanceProbability) {
-            currentSolution = neighbor;
-            currentCost = neighborCost;
-        }
-
-        // Aktualizacja najlepszego rozwiazania
-        if (currentCost < bestCost) {
-            bestSolution = currentSolution;
-            bestCost = currentCost;
-        }
-
-        // Aktualizacja parametru kontrolnego T
-        temperature *= alfa;*/
-
         for (int l = 0; l < Lk; l++) {
             std::vector<int> neighbor;
 
@@ -111,6 +72,7 @@ void SimulatedAnnealing::algorithm() {
             int neighborCost = calculatePathCost(neighbor);
 
             // Wyznaczenie prawdopodobienstwa zaakceptowania rozwiazania
+            // Funkcja celu: delta_E = x_k - x_a
             double delta = neighborCost - currentCost;
             double acceptanceProbability = delta < 0 ? 1.0 : std::exp(-delta / temperature);
 
@@ -122,11 +84,6 @@ void SimulatedAnnealing::algorithm() {
 
             // Aktualizacja najlepszego rozwiazania
             if (currentCost < bestCost) {
-                /*bestSolution = currentSolution;
-                bestCost = currentCost;
-                timeOfResult = std::chrono::duration<double>(std::chrono::steady_clock::now() - startTime).count();
-                cout << bestCost << " " << timeOfResult << endl;*/
-
                 timeOfResult = std::chrono::duration<double>(std::chrono::steady_clock::now() - startTime).count();
                 bestSolution = currentSolution;
                 cout << bestCost << " " << timeOfResult << endl;
@@ -151,6 +108,7 @@ void SimulatedAnnealing::algorithm() {
 
 std::vector<int> SimulatedAnnealing::getRandomNeighbor(const std::vector<int>& solution, std::mt19937& gen) {
 
+    // Rozklad rownomierny liczb z zakresu [0; size-1]
     std::uniform_int_distribution<> dist(0, solution.size() - 1);
     int i = dist(gen);
     int j = dist(gen);

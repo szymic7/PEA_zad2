@@ -28,21 +28,9 @@ void showMenu()
     // Kryterium stopu dla algorytmow
     int stopCriterion = 0;
 
-    // Zmienna do sledzenia, ktory z algorytmow zostal ostatnio wykonany
-    int recentAlgorithm = 0;
-
     // Ostatnie znalezione rozwiazanie
     vector<int> result;
     result.clear();
-
-    // Inicjalizacja generatora liczb losowych
-    unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
-    std::default_random_engine rng(seed);
-
-    // Pomiar czasu
-    chrono::high_resolution_clock::time_point startTime, endTime;
-    chrono::duration<double, std::milli> time(0);
-
 
     do {
         cout << endl << "Wybierz operacje: " << endl;
@@ -354,15 +342,15 @@ void showMenu()
 
                     std::ifstream inFile(filename);
                     if (!inFile) {
-                        cerr << "Error: Nie mozna otworzyc pliku " << filename << endl;
-                        return;
+                        cout << endl << "Brak pliku o podanej nazwie. Podaj prawidlowa nazwe pliku." << endl;
+                        break;
                     }
 
                     // Odczytanie liczby wierzcholkow
                     int numVertices;
                     if (!(inFile >> numVertices)) {
-                        std::cerr << "Error: Nie mozna odczytac dlugosci sciezki." << std::endl;
-                        return;
+                        cout << endl << "Blad. Nie mozna odczytac dlugosci sciezki. Sprobuj ponownie." << endl;
+                        break;
                     }
 
                     // Odczytanie sciezki
@@ -380,7 +368,7 @@ void showMenu()
                     for (int i = 0; i < numVertices; i++) {
                         pathCost += costMatrix[path[i]][path[i + 1]];
                     }
-                    pathCost += costMatrix[path[n]][path[0]];
+                    //pathCost += costMatrix[path[numVertices]][path[0]];
 
                     cout << endl << "Odczytana sciezka:" << endl;
                     for (int i = 0; i < numVertices + 1; i++) {

@@ -112,7 +112,7 @@ void TabuSearch::algorithm() {
     greedy.greedyAlgorithm();
 
     int* resultVertices = greedy.getResultVertices();
-    currentSolution.resize(n); // Ustaw rozmiar wektora
+    currentSolution.resize(n);
     for (int i = 0; i < n; ++i) {
         currentSolution[i] = resultVertices[i];
     }
@@ -161,13 +161,12 @@ void TabuSearch::algorithm() {
             noImprovementIterations++;
         }
 
-
         // Aktualizacja listy tabu
         updateTabuList(bestI, bestJ);
 
         // Ewentualna dywersyfikacja
         if (noImprovementIterations >= iterationsWithoutImprovementLimit) {
-            diversify(currentSolution); // Wymuś dywersyfikację
+            diversify(currentSolution);
         }
 
     }
